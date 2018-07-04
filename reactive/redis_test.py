@@ -32,6 +32,7 @@ def get_redis_data():
 
     status_set('active', "Redis connection info received")
 
+    clear_flag('flask-secrets.available')
     set_flag('snap-db-redis.redis.available')
 
 
@@ -42,6 +43,6 @@ def render_flask_config():
     set_flag('flask-secrets.available')
 
 
-@when('endpoint.redis.departed')
+@when_not('endpoint.redis.available')
 def clear_redis_availabe():
     clear_flag('snap-db-redis.redis.available')
