@@ -35,8 +35,13 @@ def get_redis_data():
     set_flag('snap-db-redis.redis.available')
 
 
-@when('snap-db-redis.redis.avaialble')
+@when('snap-db-redis.redis.available')
 @when_not('flask-secrets.available')
 def render_flask_config():
     render_flask_secrets()
     set_flag('flask-secrets.available')
+
+
+@when('endpoint.redis.departed')
+def clear_redis_availabe():
+    clear_flag('snap-db-redis.redis.available')
