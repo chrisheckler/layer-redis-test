@@ -1,0 +1,12 @@
+name:  redis-test
+summary: redis-test
+maintainer: Chris Heckler <hecklerchris@hotmail.com>
+description: |
+  redis-test
+tags:
+  - test
+series:
+  - bionic
+requires:
+  redis:
+    interface: redis

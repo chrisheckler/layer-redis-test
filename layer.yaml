@@ -1,0 +1,5 @@
+includes: 
+  - 'layer:basic'
+  - 'layer:leadership'
+  - 'interface:redis'
+repo: "https://github.com/chrisheckler/layer-snap-db-redis"
