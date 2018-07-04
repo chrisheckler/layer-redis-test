@@ -7,13 +7,12 @@ from charms.reactive import (
 )
 
 from charmhelpers.core.hookenv import status_set, log
-
 from charmhelpers.core import unitdata
+
+KV = unitdata.kv()
 
 
 REDIS_OUT = '/home/ubuntu/redis_config.txt'
-
-KV = unitdata.kv()
 
 
 @when('endpoint.redis.available')
@@ -21,18 +20,18 @@ KV = unitdata.kv()
 def get_redis_data():
     """ Get redis data
     """
+    KV.set('count', KV.get('count', 0)+1)
 
-    status_set('maintenance', 'Getting data')
+    status_set('maintenance', 'Getting redis data')
 
     endpoint = endpoint_from_flag('endpoint.redis.available')
 
     with open(REDIS_OUT, 'a') as f:
-        f.write(str(endpoint.relation_data()))
+        f.write(str(endpoint.relation_data()) + "\n")
+
     status_set('active', str(endpoint.relation_data()))
+
     log(str(endpoint.relation_data()))
+    log("THIS IS  THE {}th time I've ran".format(KV.get('count')))
+
     set_flag('snap-db-redis.redis.available')
-
-
-@when('endpoint.redis.broken')
-def clear_redis_available_flag():
-    clear_flag('snap-db-redis.redis.available')
