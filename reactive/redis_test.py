@@ -30,7 +30,6 @@ def get_redis_data():
         f.write(str(endpoint.relation_data()))
     status_set('active', str(endpoint.relation_data()))
     log(str(endpoint.relation_data()))
-    register_trigger(when='snap-db-redis.redis.available', clear_flag='endpoint.redis.available')
     set_flag('snap-db-redis.redis.available')
 
 
