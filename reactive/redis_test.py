@@ -9,6 +9,9 @@ from charms.reactive import (
 from charmhelpers.core.hookenv import status_set, log
 from charmhelpers.core import unitdata
 
+from charms.layer.redis_test import render_flask_secrets
+
+
 KV = unitdata.kv()
 
 
@@ -18,20 +21,22 @@ REDIS_OUT = '/home/ubuntu/redis_config.txt'
 @when('endpoint.redis.available')
 @when_not('snap-db-redis.redis.available')
 def get_redis_data():
-    """ Get redis data
+    """ Get/set redis connection info
     """
-    KV.set('count', KV.get('count', 0)+1)
-
-    status_set('maintenance', 'Getting redis data')
+    status_set('maintenance', 'Getting redis connection info')
 
     endpoint = endpoint_from_flag('endpoint.redis.available')
 
-    with open(REDIS_OUT, 'a') as f:
-        f.write(str(endpoint.relation_data()) + "\n")
+    KV.set('redis_host', endpoint.relation_data()[0]['host'])
+    KV.set('redis_port', endpoint.relation_data()[0]['port'])
 
-    status_set('active', str(endpoint.relation_data()))
-
-    log(str(endpoint.relation_data()))
-    log("THIS IS  THE {}th time I've ran".format(KV.get('count')))
+    status_set('active', "Redis connection info received")
 
     set_flag('snap-db-redis.redis.available')
+
+
+@when('snap-db-redis.redis.avaialble')
+@when_not('flask-secrets.available')
+def render_flask_config():
+    render_flask_secrets()
+    set_flag('flask-secrets.available')
